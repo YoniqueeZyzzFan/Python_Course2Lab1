@@ -4,8 +4,10 @@ import hashlib
 import requests
 import re
 
-directory_to_extract_to = 'G:\\PrikladnoePrLab1\\MATERIAL'     #директория извлечения файлов архива
-arch_file = 'G:\\PrikladnoePrLab1\\MATERIAL\\lab1.zip' #путь к архиву
+# директория извлечения файлов архива
+directory_to_extract_to = 'G:\\PrikladnoePrLab1\\MATERIAL'
+# путь к архиву
+arch_file = 'G:\\PrikladnoePrLab1\\MATERIAL\\lab1.zip'
 
 """
 #Создать новую директорию, в которую будет распакован архив
@@ -16,14 +18,14 @@ path = "G:\\PrikladnoePrLab1\\MATERIAL\\Try1"
 try:
     os.mkdir(path)
 except OSError:
-    print("Не получилось создать директорию (возможно она уже существует) %s " %path)
+    print("Не получилось создать директорию (возможно она уже существует) %s " % path)
 else:
-    print("Директория %s была успешно создана" %path)
+    print("Директория %s была успешно создана" % path)
 if not os.listdir(path):
     material = zipfile.ZipFile(arch_file)
     material.extractall(directory_to_extract_to)
     material.close()
-else :
+else:
     print("Директория не пуста")
 
 """"
@@ -31,7 +33,7 @@ else :
 # Сохранить полученный список в txt_files
 """
 
-txt_files=[]
+txt_files = []
 for root, dirs, files in os.walk(directory_to_extract_to):
     for file in files:
         if file.endswith(".txt"):
@@ -40,16 +42,16 @@ print(txt_files)
 
 # Получить значения MD5 хеша для найденных файлов и вывести полученные данные на экран.
 for file in txt_files:
-    target_file=file
+    target_file = file
     target_file_data = open(target_file, 'rb').read()
     result = hashlib.md5(target_file_data).hexdigest()
-    print (result)
+    print(result)
 
-#Найти файл MD5 хеш которого равен target_hash в directory_to_extract_to
+# Найти файл MD5 хеш которого равен target_hash в directory_to_extract_to
 
 target_hash = "4636f9ae9fef12ebd56cd39586d33cfb"
-target_file='' #полный путь к искомому файлу
-target_file_data='' #содержимое искомого файлy
+target_file = '' # полный путь к искомому файлу
+target_file_data = '' # содержимое искомого файлy
 flag = True
 for root, dirs, files in os.walk(directory_to_extract_to):
     for file in files:
@@ -60,7 +62,7 @@ for root, dirs, files in os.walk(directory_to_extract_to):
                 target_file_data = open(txt_single, 'rb').read()
                 flag = False
                 break
-    if flag == False:
+    if not flag:
         break
  # Отобразить полный путь к искомому файлу и его содержимое на экране
 print(target_file)
@@ -99,17 +101,18 @@ for line in lines:
     temp = re.sub(";$", "", temp)
     temp = re.sub(";Всего", "Всего", temp)
     # Разбитие строки на подстроки
-    tmp_split = re.split(r";",temp)
+    tmp_split = re.split(r";", temp)
     # Извлечение и обработка (удаление "лишних" символов) данных из первого столбца
     country_name = tmp_split[0]
     first = 0
     for i in (tmp_split[0]):
         if i == " ":
             first = tmp_split[0].index(i)+2
-            break;
+            break
     country_name = tmp_split[0][first::]
 
-    # Извлечение данных из оставшихся столбцов. Данные из этих столбцов должны иметь числовое значение (прочерк можно заменить на -1).
+    # Извлечение данных из оставшихся столбцов.
+    # Данные из этих столбцов должны иметь числовое значение (прочерк можно заменить на -1).
     # Некоторые строки содержат пробелы в виде символа '\xa0'.
 
     col1_val = re.sub(u"\xa0", "", tmp_split[1])
@@ -117,12 +120,12 @@ for line in lines:
     col3_val = re.sub(u"\xa0", "", tmp_split[3])
     col4_val = re.sub(u"\xa0", "", tmp_split[4])
     for i in col3_val:
-        if i=="*":
+        if i ==" *":
             col3_val = -1
-        if i=="0":
+        if i == "0":
             col3_val = -1
     for i in col4_val:
-        if i=="_":
+        if i == "_":
             col4_val = -1
     # Запись извлеченных данных в словарь
     result_dct[country_name] = {}
@@ -142,6 +145,6 @@ for key in result_dct.keys():
     output.write("\n")
 output.close()
 
-#Вывод данных на экран для указанного первичного ключа (первый столбец таблицы)
+# Вывод данных на экран для указанного первичного ключа (первый столбец таблицы)
 target_country = input("Введите название страны: ")
 print(target_country, result_dct[target_country])
