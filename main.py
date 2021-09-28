@@ -50,21 +50,21 @@ for file in txt_files:
 # Найти файл MD5 хеш которого равен target_hash в directory_to_extract_to
 
 target_hash = "4636f9ae9fef12ebd56cd39586d33cfb"
-target_file = '' # полный путь к искомому файлу
-target_file_data = '' # содержимое искомого файлy
+target_file = ''  # полный путь к искомому файлу
+target_file_data = ''  # содержимое искомого файлy
 flag = True
 for root, dirs, files in os.walk(directory_to_extract_to):
     for file in files:
-            txt_single = os.path.join(root, file)
-            txt_single_data = open(txt_single, 'rb').read()
-            if target_hash == hashlib.md5(txt_single_data).hexdigest():
-                target_file = txt_single
-                target_file_data = open(txt_single, 'rb').read()
-                flag = False
-                break
+        txt_single = os.path.join(root, file)
+        txt_single_data = open(txt_single, 'rb').read()
+        if target_hash == hashlib.md5(txt_single_data).hexdigest():
+            target_file = txt_single
+            target_file_data = open(txt_single, 'rb').read()
+            flag = False
+            break
     if not flag:
         break
- # Отобразить полный путь к искомому файлу и его содержимое на экране
+# Отобразить полный путь к искомому файлу и его содержимое на экране
 print(target_file)
 print(target_file_data)
 """"
@@ -73,12 +73,13 @@ print(target_file_data)
 """
 
 r = requests.get(target_file_data)
-result_dct ={} # словарь для записи содержимого таблицы
+result_dct = {}  # словарь для записи содержимого таблицы
 
 counter = 0
 # Получение списка строк таблицы
 lines = re.findall(r'<div class="Table-module_row__3TH83">.*?</div>.*?</div>.*?</div>.*?</div>.*?</div>', r.text)
 for line in lines:
+    headers = []
     # извлечение заголовков таблицы
     if counter == 0:
         # Удаление тегов
@@ -87,7 +88,7 @@ for line in lines:
         headers = re.findall("[А-Яа-я]+\s?", headers)
         headers[-2] = headers[-2] + headers[-1]
         headers.pop(-1)
-        counter+=1
+        counter += 1
         continue
 
     # Удаление тегов
@@ -120,7 +121,7 @@ for line in lines:
     col3_val = re.sub(u"\xa0", "", tmp_split[3])
     col4_val = re.sub(u"\xa0", "", tmp_split[4])
     for i in col3_val:
-        if i ==" *":
+        if i == " *":
             col3_val = -1
         if i == "0":
             col3_val = -1
@@ -129,12 +130,15 @@ for line in lines:
             col4_val = -1
     # Запись извлеченных данных в словарь
     result_dct[country_name] = {}
+    try:
+        headers[0]
+    except NameError:
+        print("well, it wasnt defined")
     result_dct[country_name][headers[0]] = int(col1_val)
     result_dct[country_name][headers[1]] = int(col2_val)
     result_dct[country_name][headers[2]] = int(col3_val)
     result_dct[country_name][headers[3]] = int(col4_val)
     print(country_name, result_dct[country_name])
-    counter += 1
 
 # Запись данных из полученного словаря в файл
 
