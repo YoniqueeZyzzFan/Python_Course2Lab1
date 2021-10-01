@@ -30,7 +30,7 @@ else:
 
 """"
 #Получить список файлов (полный путь) формата txt, находящихся в directory_to_extract_to.
-# Сохранить полученный список в txt_files
+#Сохранить полученный список в txt_files
 """
 
 txt_files = []
@@ -76,10 +76,10 @@ r = requests.get(target_file_data)
 result_dct = {}  # словарь для записи содержимого таблицы
 
 counter = 0
+headers = []
 # Получение списка строк таблицы
 lines = re.findall(r'<div class="Table-module_row__3TH83">.*?</div>.*?</div>.*?</div>.*?</div>.*?</div>', r.text)
 for line in lines:
-    headers = []
     # извлечение заголовков таблицы
     if counter == 0:
         # Удаление тегов
@@ -90,7 +90,6 @@ for line in lines:
         headers.pop(-1)
         counter += 1
         continue
-
     # Удаление тегов
     temp = re.sub("<.*?>", ';', line)
     # Значения в таблице, заключенные в скобках, не учитывать. Для этого удалить скобки и символы между ними.
@@ -130,25 +129,31 @@ for line in lines:
             col4_val = -1
     # Запись извлеченных данных в словарь
     result_dct[country_name] = {}
-    try:
-        headers[0]
-    except NameError:
-        print("well, it wasnt defined")
     result_dct[country_name][headers[0]] = int(col1_val)
     result_dct[country_name][headers[1]] = int(col2_val)
     result_dct[country_name][headers[2]] = int(col3_val)
     result_dct[country_name][headers[3]] = int(col4_val)
-    print(country_name, result_dct[country_name])
-
 # Запись данных из полученного словаря в файл
 
 output = open(directory_to_extract_to+'\\data.csv', 'w')
+flag = True
+strh = ";".join(headers)
 for key in result_dct.keys():
-    output.write(key)
-    output.write(result_dct[key].__str__())
+    if flag:
+        strh = "Название страны" + strh
+        output.write(strh + "\n")
+        flag = False
+    output.write(key+";")
+    for i in range(0, 4):
+        string_to_write = str(result_dct[key][headers[i]]) + ";"
+        output.write(string_to_write)
     output.write("\n")
 output.close()
 
 # Вывод данных на экран для указанного первичного ключа (первый столбец таблицы)
 target_country = input("Введите название страны: ")
-print(target_country, result_dct[target_country])
+try:
+    string = str(result_dct[target_country])
+    print(string)
+except KeyError:
+    print("Страны с указанным именем не существует")
