@@ -74,7 +74,6 @@ print(target_file_data)
 
 r = requests.get(target_file_data)
 result_dct = {}  # словарь для записи содержимого таблицы
-
 counter = 0
 headers = []
 # Получение списка строк таблицы
@@ -137,11 +136,11 @@ for line in lines:
 
 output = open(directory_to_extract_to+'\\data.csv', 'w')
 flag = True
-strh = ";".join(headers)
+str_h = ";".join(headers)
 for key in result_dct.keys():
     if flag:
-        strh = "Название страны" + strh
-        output.write(strh + "\n")
+        str_h = "Название страны" + str_h
+        output.write(str_h + "\n")
         flag = False
     output.write(key+";")
     for i in range(0, 4):
