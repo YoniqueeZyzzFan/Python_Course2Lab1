@@ -139,7 +139,7 @@ flag = True
 str_h = ";".join(headers)
 for key in result_dct.keys():
     if flag:
-        str_h = "Название страны" + str_h
+        str_h = "Название страны ;" + str_h
         output.write(str_h + "\n")
         flag = False
     output.write(key + ";")
