@@ -51,7 +51,7 @@ for file in txt_files:
 
 target_hash = "4636f9ae9fef12ebd56cd39586d33cfb"
 target_file = ''  # полный путь к искомому файлу
-target_file_data = ''  # содержимое искомого файлy
+target_file_data = ''  # содержимое искомого файлу
 flag = True
 for root, dirs, files in os.walk(directory_to_extract_to):
     for file in files:
@@ -106,7 +106,7 @@ for line in lines:
     first = 0
     for i in (tmp_split[0]):
         if i == " ":
-            first = tmp_split[0].index(i)+2
+            first = tmp_split[0].index(i) + 2
             break
     country_name = tmp_split[0][first::]
 
@@ -134,7 +134,7 @@ for line in lines:
     result_dct[country_name][headers[3]] = int(col4_val)
 # Запись данных из полученного словаря в файл
 
-output = open(directory_to_extract_to+'\\data.csv', 'w')
+output = open(directory_to_extract_to + '\\data.csv', 'w')
 flag = True
 str_h = ";".join(headers)
 for key in result_dct.keys():
@@ -142,7 +142,7 @@ for key in result_dct.keys():
         str_h = "Название страны" + str_h
         output.write(str_h + "\n")
         flag = False
-    output.write(key+";")
+    output.write(key + ";")
     for i in range(0, 4):
         string_to_write = str(result_dct[key][headers[i]]) + ";"
         output.write(string_to_write)
